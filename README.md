@@ -11,3 +11,9 @@ PouchDB documentation: https://pouchdb.com/api.html#query_index
 CouchDB selector syntax: http://docs.couchdb.org/en/stable/api/database/find.html#selector-syntax
 
 Ionic V4 starter template used: https://ionicframework.com/docs/angular/your-first-app#create-an-app ('sidemenu' starter template)
+
+## Installation and running instructions
+- Install Ionic: https://ionicframework.com/docs/angular/your-first-app
+- Clone this repo and cd into its root folder
+- `npm install`
+- `ionic serve`
