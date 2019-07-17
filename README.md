@@ -3,6 +3,7 @@
 This example is in Ionic V4 and tests the db.find() method of PouchDB. It filters a list by the selected checkboxes, using the $or operate.
 
 UI: list.page.ts
+
 Service calls: database.service.ts
 
 PouchDB documentation: https://pouchdb.com/api.html#query_index
