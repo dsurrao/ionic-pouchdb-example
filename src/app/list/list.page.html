@@ -13,12 +13,18 @@
   <ion-list>
     <ion-item *ngFor="let item of items">
       <ion-icon [name]="item.icon" slot="start"></ion-icon>
-      {{item.title}}
-      <div class="item-note" slot="end">
-        {{item.note}}
-      </div>
+      {{item.note}}
     </ion-item>
   </ion-list>
+
+  <ion-label>What shall we do?? </ion-label>
+  <ng-container *ngFor="let icon of icons">
+    <ion-checkbox color="primary" (click)="doFilter(icon.name)" 
+      checked *ngIf="isChecked(icon.name)"></ion-checkbox>
+    <ion-checkbox color="primary" (click)="doFilter(icon.name)" 
+      *ngIf="!isChecked(icon.name)"></ion-checkbox>
+    <ion-icon name="{{icon.name}}" style="padding-right: 10px"></ion-icon>
+  </ng-container>
   <!--
     <div *ngIf="selectedItem" padding>
       You navigated here from <b>{{selectedItem.title }}</b>

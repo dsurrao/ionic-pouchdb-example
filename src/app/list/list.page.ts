@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { DatabaseService } from '../services/database.service';
+import { MyItem } from '../models/my-item';
 
 @Component({
   selector: 'app-list',
@@ -6,28 +8,69 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['list.page.scss']
 })
 export class ListPage implements OnInit {
-  private selectedItem: any;
   private icons = [
-    'flask',
-    'wifi',
-    'beer',
-    'football',
-    'basketball',
-    'paper-plane',
-    'american-football',
-    'boat',
-    'bluetooth',
-    'build'
+    {name: 'beer', desc: "Let's just drink beer! 🍺🍺🍺", checked: true}, 
+    {name: 'football', desc: "Fútbol!", checked: true}, 
+    {name: 'basketball', desc: "NBA rules!!", checked: true}, 
+    {name: 'paper-plane', desc: "Paper planes are nice to make", checked: true}, 
+    {name: 'american-football', desc: "Let's play football!", checked: true}
   ];
-  public items: Array<{ title: string; note: string; icon: string }> = [];
-  constructor() {
-    for (let i = 1; i < 11; i++) {
-      this.items.push({
-        title: 'Item ' + i,
-        note: 'This is item #' + i,
-        icon: this.icons[Math.floor(Math.random() * this.icons.length)]
-      });
-    }
+  public items: MyItem[] = [];
+  constructor(public dbSvc: DatabaseService) {
+
+    // uncomment this to clear the database and start fresh
+    // this.dbSvc.destroyDatabase();
+    // return;
+
+    this.dbSvc.getItems()
+    .then(dbItems => {
+      if (dbItems.length === 0) {
+        let item: MyItem;
+        let randomIndex: number;
+        for (let i = 1; i < 11; i++) {
+          randomIndex = Math.floor(Math.random() * this.icons.length);
+          item = new MyItem();
+          item.note = this.icons[randomIndex].desc;
+          item.icon = this.icons[randomIndex].name;
+          item._id = String(i);
+          dbItems.push(item);
+        }
+      }
+      return (dbItems);
+    }).then(dbItems => {
+      // if this is a new list of items, save it to database
+      if (this.items.length === 0) {
+        this.dbSvc.saveItems(dbItems).then(response => {
+          // update the _rev versions of saved items
+          let responseItem; 
+          for (let item of dbItems) {
+            responseItem = response.find(elem => {
+              return elem.id === item._id;
+            })
+            item._rev = responseItem.rev;
+          }
+        });
+      }
+      // finally set items for UI display
+      this.items = dbItems;
+    })
+  }
+
+  doFilter(iconName: string) {
+    let icon = this.icons.find(icon => {return icon.name === iconName});
+    icon.checked = !icon.checked;
+
+    this.dbSvc.findByIcons(
+      this.icons
+        .filter(icon => { return icon.checked })
+        .map(icon => { return icon.name })
+      ).then(response => {
+      this.items = response.docs;
+    });
+  }
+
+  isChecked(iconName: string): boolean {
+    return this.icons.find(icon => {return icon.name === iconName && icon.checked}) !== undefined;
   }
 
   ngOnInit() {
