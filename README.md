@@ -1,6 +1,6 @@
 # ionic-pouchdb-example
 
-This example is in Ionic V4 and Angular, and tests the db.find() method of PouchDB. It filters a list by the selected checkboxes, using the $or operate.
+This example is in Ionic V4 and Angular, and tests the db.find() method of PouchDB. It filters a list by the selected checkboxes, using the $or operator.
 
 UI: list.page.ts
 
