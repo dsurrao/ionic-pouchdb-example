@@ -53,19 +53,20 @@ export class DatabaseService {
       let selectorArray = iconNames.map(iconName => {return {'icon': iconName}});
       this.db.createIndex({
         index: {fields: ['icon']}
-      });
-      this.db.find({
-        selector: 
-        { 
-          '$or': selectorArray
-        },
-        //fields: ['_id', 'name'],
-        //sort: ['name']
-      }).then(function (result) {
-        // handle result
-        resolve(result);
-      }).catch(function (err) {
-        reject(err);
+      }).then(result => {
+        this.db.find({
+          selector: 
+          { 
+            '$or': selectorArray
+          },
+          //fields: ['_id', 'name'],
+          //sort: ['name']
+        }).then(function (result) {
+          // handle result
+          resolve(result);
+        }).catch(function (err) {
+          reject(err);
+        });
       });
     });
   }
